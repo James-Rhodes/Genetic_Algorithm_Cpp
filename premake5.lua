@@ -20,7 +20,7 @@ project "Genetic_Algorithm_Cpp"
       "%{wks.location}/%{prj.name}/include"
    }
 
-   files { "%{wks.location}/%{prj.name}/**.h","%{wks.location}/%{prj.name}/**.cpp" }
+   files { "%{wks.location}/%{prj.name}/**.hpp" }
 
    filter "configurations:Debug"
       defines { "DEBUG" }
@@ -41,9 +41,6 @@ project "Examples"
 
    includedirs{
       "%{wks.location}/Genetic_Algorithm_Cpp/include"
-   }
-   links{
-      "Genetic_Algorithm_Cpp"
    }
 
    files { "Examples/basic_optimization/**.h","Examples/basic_optimization/**.cpp" }
