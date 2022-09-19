@@ -22,7 +22,9 @@ public:
         xVal = averageVal; // Crude crossover for one variable. Make it the average of the parents values
     };
 
-    void Mutate(float mutationRate) override {};
+    void Mutate(float mutationRate) override {
+        Init(); // Just randomly reassign the value of x as we did in the Init function
+    };
 
     double CalculateFitness() override {
         return (-100 * xVal * xVal + 100);
