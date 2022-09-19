@@ -16,7 +16,6 @@ project "Genetic_Algorithm_Cpp"
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
    location("%{wks.location}/%{prj.name}")
 
-   
    includedirs{
       "%{wks.location}/%{prj.name}/include"
    }
