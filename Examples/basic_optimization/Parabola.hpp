@@ -14,9 +14,13 @@ public:
     };
 
     void Init() override {
+        xVal = 100 * (GA_Cpp::GetRandom01() * 2 - 1); // Generates a random value between -100 and 100
     };
 
-    void CrossOver(const Parabola& parentA, const Parabola& parentB) override {};
+    void CrossOver(const Parabola& parentA, const Parabola& parentB) override {
+        float averageVal = (parentA.xVal + parentB.xVal) / 2;
+        xVal = averageVal; // Crude crossover for one variable. Make it the average of the parents values
+    };
 
     void Mutate(float mutationRate) override {};
 
