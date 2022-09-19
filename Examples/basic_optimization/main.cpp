@@ -1,15 +1,10 @@
 #include <iostream>
 #include "GeneticAlgorithm.hpp"
+#include "Parabola.hpp"
 
-class Test {
-public:
-    Test() {};
-
-
-};
 
 int main()
 {
     std::cout << "Hello Example Project" << std::endl;
-    auto test = GA_Cpp::GeneticAlgorithm<Test>();
+    auto test = GA_Cpp::GeneticAlgorithm<Parabola>();
 }
