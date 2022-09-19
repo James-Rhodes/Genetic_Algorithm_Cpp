@@ -3,32 +3,24 @@
 #include "PopulationMember.hpp"
 #include <vector>
 #include <iostream>
+#include <type_traits>
 
 namespace GA_Cpp
 {
 
-	// Below Template only allows types passed in if they are inherited from PopulationMember
-	template <typename T>
+	template <typename popType>
 	class GeneticAlgorithm
 	{
 	public:
 		GeneticAlgorithm() {
-			bool populationMemberBaseOfT = std::is_base_of<PopulationMember, T>::value;
 
-			if (!populationMemberBaseOfT) {
-				//Throw error
-			std::cout << "Was not derived my dude" << std::endl;
-			}
+			static_assert(std::is_base_of<PopulationMember<popType>, popType>::value, "\nERROR: The Population Member you have passed in does not derive from base class PopulationMember...\nERROR: Please inherit from this base type. This is achieved using CRTP.\nERROR: eg. class YourClass : public PopulationMember<YourClass>{}\n");
+
 		};
 
-		// T& Optimize() {
-		//
-		//	return static_cast<T&>(OptimizeInternal());
-		// }
+
 
 	private:
-		// PopulationMember* OptimizeInternal();
 
-		std::vector<PopulationMember *> populationPool;
 	};
 }

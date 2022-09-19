@@ -7,6 +7,7 @@ workspace "Genetic_Algorithm_Cpp"
    configurations { "Debug", "Release" }
    architecture "x86_64"
    startproject "Examples"
+   cppdialect "C++20"
 
 project "Genetic_Algorithm_Cpp"
    kind "StaticLib"
