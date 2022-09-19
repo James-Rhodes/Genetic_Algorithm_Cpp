@@ -14,7 +14,7 @@ public:
     };
 
     void Init() override {
-        m_xVal = 100 * (GA_Cpp::GetRandom01() * 2 - 1); // Generates a random value between -100 and 100
+        m_xVal = 100 * ((float)GA_Cpp::GetRandom01() * 2 - 1); // Generates a random value between -100 and 100
     };
 
     void CrossOver(const Parabola& parentA, const Parabola& parentB) override {

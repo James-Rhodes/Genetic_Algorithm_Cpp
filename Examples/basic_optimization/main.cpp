@@ -6,5 +6,5 @@
 int main()
 {
     std::cout << "Hello Example Project" << std::endl;
-    auto test = GA_Cpp::GeneticAlgorithm<Parabola>();
+    auto test = GA_Cpp::GeneticAlgorithm<Parabola>(100);
 }
