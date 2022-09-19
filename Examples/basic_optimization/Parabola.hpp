@@ -7,9 +7,7 @@
 // The corresponding x value should be 0
 class Parabola : public GA_Cpp::PopulationMember<Parabola> {
 public:
-    Parabola(){
-
-    };
+    Parabola() = default;
 
     void LogParameters() const override {
         std::cout << fitness << std::endl;

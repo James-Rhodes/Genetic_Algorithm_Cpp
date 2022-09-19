@@ -1,4 +1,7 @@
 #pragma once
+#include <random>
+#include <chrono>
+#include <ctime>
 
 namespace GA_Cpp
 {
@@ -32,4 +35,11 @@ namespace GA_Cpp
 
 		double fitness = 0;
 	};
+
+	double GetRandom01()
+	{
+		static std::mt19937 e((unsigned int)std::chrono::system_clock::now().time_since_epoch().count());
+		static std::uniform_real_distribution<> dis(0, 1); // range 0 - 1
+		return dis(e);
+	}
 }
