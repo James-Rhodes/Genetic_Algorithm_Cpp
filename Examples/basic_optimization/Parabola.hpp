@@ -14,12 +14,12 @@ public:
     };
 
     void Init() override {
-        xVal = 100 * (GA_Cpp::GetRandom01() * 2 - 1); // Generates a random value between -100 and 100
+        m_xVal = 100 * (GA_Cpp::GetRandom01() * 2 - 1); // Generates a random value between -100 and 100
     };
 
     void CrossOver(const Parabola& parentA, const Parabola& parentB) override {
-        float averageVal = (parentA.xVal + parentB.xVal) / 2;
-        xVal = averageVal; // Crude crossover for one variable. Make it the average of the parents values
+        float averageVal = (parentA.m_xVal + parentB.m_xVal) / 2;
+        m_xVal = averageVal; // Crude crossover for one variable. Make it the average of the parents values
     };
 
     void Mutate(float mutationRate) override {
@@ -27,9 +27,9 @@ public:
     };
 
     double CalculateFitness() override {
-        return (-100 * xVal * xVal + 100);
+        return (-100 * m_xVal * m_xVal + 100);
     };
 
 private:
-    float xVal = 123; // Not needed. This simply gets rid of the compiler error complaining that this variable is not initialised
+    float m_xVal = 123; // Not needed. This simply gets rid of the compiler error complaining that this variable is not initialised
 };
