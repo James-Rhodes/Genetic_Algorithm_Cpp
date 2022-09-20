@@ -86,6 +86,12 @@ namespace GA_Cpp
 
 		void MutateAll() {
 
+			for (popType& populationMember : m_population) {
+				float randomNum = GetRandom01();
+				if (randomNum < m_mutationRate) {
+					populationMember.Mutate();
+				}
+			}
 		};
 
 		void CalculateAllFitness() {
