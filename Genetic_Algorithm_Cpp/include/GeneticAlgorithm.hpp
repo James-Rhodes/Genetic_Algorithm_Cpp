@@ -12,7 +12,7 @@ namespace GA_Cpp
 	class GeneticAlgorithm
 	{
 	public:
-		GeneticAlgorithm(int populationSize):m_populationSize(populationSize) {
+		GeneticAlgorithm(int populationSize):m_populationSize(populationSize),m_population(std::vector<popType>(populationSize)) {
 
 			static_assert(std::is_base_of<PopulationMember<popType>, popType>::value, "\nERROR: The Population Member you have passed in does not derive from base class PopulationMember...\nERROR: Please inherit from this base type. This is achieved using CRTP.\nERROR: eg. class YourClass : public PopulationMember<YourClass>{}\n");
 
@@ -32,5 +32,16 @@ namespace GA_Cpp
 				popMember.Init();
 			}
 		}
+
+		void CrossOverAll() {
+
+		};
+
+		void MutateAll() {
+
+		};
+
+		void CalculateAllFitness() {
+		};
 	};
 }
