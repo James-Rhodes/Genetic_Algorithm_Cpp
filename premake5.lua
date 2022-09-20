@@ -6,7 +6,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 workspace "Genetic_Algorithm_Cpp"
    configurations { "Debug", "Release" }
    architecture "x86_64"
-   startproject "Examples"
+   startproject "basic_optimisation"
    cppdialect "C++20"
 
 project "Genetic_Algorithm_Cpp"
@@ -31,19 +31,19 @@ project "Genetic_Algorithm_Cpp"
       optimize "On"
 
 
-project "Examples"
+project "basic_optimisation"
 
    kind "ConsoleApp"
    language "C++"
-	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
-   location("%{wks.location}/%{prj.name}")
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/Examples/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/Example/%{prj.name}")
+   location("%{wks.location}/Examples/%{prj.name}")
 
    includedirs{
       "%{wks.location}/Genetic_Algorithm_Cpp/include"
    }
 
-   files { "Examples/basic_optimization/**.h","Examples/basic_optimization/**.cpp" }
+   files { "Examples/%{prj.name}/**.h","Examples/%{prj.name}/**.cpp" }
 
 
 
