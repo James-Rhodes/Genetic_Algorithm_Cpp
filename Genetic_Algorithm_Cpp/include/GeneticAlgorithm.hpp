@@ -51,7 +51,7 @@ namespace GA_Cpp
 		float m_mutationRate;
 		int m_numElite;
 		double m_totalFitness = 0;
-		float m_selectionPoolPercentage = 0.3; // How much of the selection pool to be used for tournament selection
+		float m_selectionPoolPercentage = 0.3f; // How much of the selection pool to be used for tournament selection
 
 		int (GeneticAlgorithm::*selectionFunc)() const;
 
@@ -116,16 +116,17 @@ namespace GA_Cpp
 		};
 
 		int TournamentSelection() const {
+			// Performs selection using the tournament selection method. This can be found here: https://en.wikipedia.org/wiki/Tournament_selection
 			int bestIndex = -1;
-			int selectionPool = m_populationSize * m_selectionPoolPercentage;
+			int selectionPool = (int)(m_populationSize * m_selectionPoolPercentage);
 			for (int i = 0; i < selectionPool; i++)
 			{
-				int randIndex = GetRandomInt(0, populationSize - 1);
+				int randIndex = GetRandomInt(0, m_populationSize - 1);
 				if (bestIndex == -1)
 				{
 					bestIndex = randIndex;
 				}
-				else if (genomes[randIndex].fitness > genomes[bestIndex].fitness)
+				else if (m_population[randIndex].fitness > m_population[bestIndex].fitness)
 				{
 					bestIndex = randIndex;
 				}
