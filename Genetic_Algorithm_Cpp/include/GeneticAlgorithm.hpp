@@ -14,11 +14,11 @@ namespace GA_Cpp
 	class GeneticAlgorithm
 	{
 	public:
-		GeneticAlgorithm(int populationSize,float mutationRate, int numElite = 1, SelectionAlgorithm selectionAlgorithm = SelectionAlgorithm::simple)
-						:m_populationSize(populationSize),
-						 m_population(std::vector<popType>(populationSize)),
-						 m_mutationRate(mutationRate),
-						 m_numElite(numElite) 
+		GeneticAlgorithm(int populationSize, float mutationRate, int numElite = 1, SelectionAlgorithm selectionAlgorithm = SelectionAlgorithm::simple)
+			:m_populationSize(populationSize),
+			m_population(std::vector<popType>(populationSize)),
+			m_mutationRate(mutationRate),
+			m_numElite(numElite)
 		{
 
 			static_assert(std::is_base_of<PopulationMember<popType>, popType>::value, "\nERROR: The Population Member you have passed in does not derive from base class PopulationMember...\nERROR: Please inherit from this base type. This is achieved using CRTP.\nERROR: eg. class YourClass : public PopulationMember<YourClass>{}\n");
@@ -43,6 +43,13 @@ namespace GA_Cpp
 		void SetSelectionPoolPercentage(float selectionPoolPercentage) {
 			m_selectionPoolPercentage = selectionPoolPercentage;
 		}
+
+		void Optimise() {
+			CalculateAllFitness();
+			CrossOverAll();
+			MutateAll();
+		}
+	
 
 	private:
 		int m_populationSize;
@@ -91,9 +98,9 @@ namespace GA_Cpp
 		void MutateAll() {
 
 			for (popType& populationMember : m_population) {
-				float randomNum = GetRandom01();
+				double randomNum = GetRandom01();
 				if (randomNum < m_mutationRate) {
-					populationMember.Mutate();
+					populationMember.Mutate(m_mutationRate);
 				}
 			}
 		};
