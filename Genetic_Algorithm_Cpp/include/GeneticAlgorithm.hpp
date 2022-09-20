@@ -54,6 +54,18 @@ namespace GA_Cpp
 			return m_population[m_indexOfBestPopulationMember];
 		}
 
+		void LogBestResult() {
+			m_population[m_indexOfBestPopulationMember].LogParameters();
+		}
+
+		void LogPreviousGeneration() {
+			std::qsort(m_population.data(), m_population.size(), sizeof(popType), GeneticAlgorithm::ComparePopType);
+
+			for (popType& populationMember : m_population) {
+				populationMember.LogParameters();
+			}
+		}
+
 	private:
 		int m_populationSize;
 		std::vector<popType> m_population;
