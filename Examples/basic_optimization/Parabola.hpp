@@ -10,7 +10,7 @@ public:
     Parabola() = default;
 
     void LogParameters() const override {
-        std::cout << fitness << std::endl;
+        std::cout << "Value X: " << m_xVal<<" with Fitness: "<< fitness << std::endl;
     };
 
     void Init() override {
