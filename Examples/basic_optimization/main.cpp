@@ -8,5 +8,11 @@ int main()
     std::cout << "Hello Example Project" << std::endl;
     auto test = GA_Cpp::GeneticAlgorithm<Parabola>(10,0.2f,1,GA_Cpp::SelectionAlgorithm::tournament);
 
-    test.Optimise();
+    for (int i = 0; i < 10; i++) {
+        test.Optimise();
+
+        auto best = test.GetBestResult();
+
+        best.LogParameters();
+    }
 }

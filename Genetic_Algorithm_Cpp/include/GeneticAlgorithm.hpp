@@ -45,11 +45,14 @@ namespace GA_Cpp
 		}
 
 		void Optimise() {
-			CalculateAllFitness();
 			CrossOverAll();
 			MutateAll();
+			CalculateAllFitness();
 		}
 	
+		popType& GetBestResult() {
+			return m_population[m_indexOfBestPopulationMember];
+		}
 
 	private:
 		int m_populationSize;
@@ -58,6 +61,7 @@ namespace GA_Cpp
 		int m_numElite;
 		double m_totalFitness = 0;
 		float m_selectionPoolPercentage = 0.3f; // How much of the selection pool to be used for tournament selection
+		int m_indexOfBestPopulationMember = -1;
 
 		int (GeneticAlgorithm::*selectionFunc)() const;
 
@@ -65,6 +69,8 @@ namespace GA_Cpp
 			for (popType& popMember : m_population) {
 				popMember.Init();
 			}
+
+			CalculateAllFitness();
 		}
 
 		void CrossOverAll() {
@@ -108,11 +114,22 @@ namespace GA_Cpp
 		void CalculateAllFitness() {
 			m_totalFitness = 0;
 
+			double bestFitness = -INFINITY;
+			m_indexOfBestPopulationMember = -1;
+
+			int i = 0;
 			for (popType& populationMember : m_population) {
 				double fitness = populationMember.CalculateFitness();
 				populationMember.SetFitness(fitness);
 
+				if (fitness > bestFitness)
+				{
+					bestFitness = fitness;
+					m_indexOfBestPopulationMember = i;
+				}
+
 				m_totalFitness += fitness;
+				i++;
 			}
 		};
 
