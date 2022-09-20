@@ -8,7 +8,6 @@
 
 namespace GA_Cpp
 {
-	// simple selection is defined in this link as a generic selection algorithm https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
 	enum class SelectionAlgorithm { simple, tournament};
 
 	template <typename popType>
@@ -111,8 +110,27 @@ namespace GA_Cpp
 		};
 
 		int SimpleSelection() const {
-			std::cout << "Simple Selection" << std::endl;
-			return 0;
+			// simple selection is defined in this link as a generic selection algorithm https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
+
+			double randNum = GetRandom01();
+			double accumulation = 0;
+			double prob;
+
+			while (randNum == 0)
+			{
+				randNum = GetRandom01();
+			}
+
+			for (int i = 0; i < m_populationSize; i++)
+			{
+				prob = m_population[i].fitness / m_totalFitness;
+				accumulation += prob;
+				if (accumulation >= randNum)
+				{
+					return i;
+				}
+			}
+			return m_populationSize - 1;
 		};
 
 		int TournamentSelection() const {
