@@ -38,12 +38,15 @@ namespace GA_Cpp
 
 	double GetRandom01()
 	{
+		// Returns a random number between 0 and 1
+
 		static std::mt19937 e((unsigned int)std::chrono::system_clock::now().time_since_epoch().count());
 		static std::uniform_real_distribution<> dis(0, 1); // range 0 - 1
 		return dis(e);
 	}
 
 	int GetRandomInt(int min, int max) {
+		// Returns a random integer between min and max inclusive
 		max++;
 		return floor((GetRandom01()) * (max - min) / (1.0f) + min);
 	}
