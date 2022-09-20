@@ -48,6 +48,6 @@ namespace GA_Cpp
 	int GetRandomInt(int min, int max) {
 		// Returns a random integer between min and max inclusive
 		max++;
-		return floor((GetRandom01()) * (max - min) / (1.0f) + min);
+		return (int)std::floor(GetRandom01() * (float)(max - min) / (1.0f + (float)min));
 	}
 }
