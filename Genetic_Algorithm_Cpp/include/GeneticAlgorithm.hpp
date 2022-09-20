@@ -41,13 +41,17 @@ namespace GA_Cpp
 			CrossOverAll();
 		};
 
-
+		void SetSelectionPoolPercentage(float selectionPoolPercentage) {
+			m_selectionPoolPercentage = selectionPoolPercentage;
+		}
 
 	private:
 		int m_populationSize;
 		std::vector<popType> m_population;
 		float m_mutationRate;
 		int m_numElite;
+		double m_totalFitness = 0;
+		float m_selectionPoolPercentage = 0.3; // How much of the selection pool to be used for tournament selection
 
 		int (GeneticAlgorithm::*selectionFunc)() const;
 
@@ -96,6 +100,14 @@ namespace GA_Cpp
 		};
 
 		void CalculateAllFitness() {
+			m_totalFitness = 0;
+
+			for (popType& populationMember : m_population) {
+				double fitness = populationMember.CalculateFitness();
+				populationMember.SetFitness(fitness);
+
+				m_totalFitness += fitness;
+			}
 		};
 
 		int SimpleSelection() const {
@@ -104,9 +116,22 @@ namespace GA_Cpp
 		};
 
 		int TournamentSelection() const {
-			std::cout << "Tournament Selection" << std::endl;
-			//return 0;
-			return (int)(GetRandom01() * 3);
+			int bestIndex = -1;
+			int selectionPool = m_populationSize * m_selectionPoolPercentage;
+			for (int i = 0; i < selectionPool; i++)
+			{
+				int randIndex = GetRandomInt(0, populationSize - 1);
+				if (bestIndex == -1)
+				{
+					bestIndex = randIndex;
+				}
+				else if (genomes[randIndex].fitness > genomes[bestIndex].fitness)
+				{
+					bestIndex = randIndex;
+				}
+			}
+
+			return bestIndex;
 		};
 
 		static int ComparePopType(const void* _a, const void* _b) {

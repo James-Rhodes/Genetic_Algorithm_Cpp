@@ -42,4 +42,9 @@ namespace GA_Cpp
 		static std::uniform_real_distribution<> dis(0, 1); // range 0 - 1
 		return dis(e);
 	}
+
+	int GetRandomInt(int min, int max) {
+		max++;
+		return floor((GetRandom01()) * (max - min) / (1.0f) + min);
+	}
 }
