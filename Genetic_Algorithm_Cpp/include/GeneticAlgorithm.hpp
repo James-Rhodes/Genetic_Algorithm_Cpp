@@ -77,10 +77,11 @@ namespace GA_Cpp
 						parentBIndex = (this->*selectionFunc)();
 					}
 
-					populationMember.CrossOver(m_population[parentAIndex],m_population[parentBIndex]);
+					populationMember.CrossOver(m_population[parentAIndex], m_population[parentBIndex]);
 				}
 				i++;
 			}
+			std::swap(m_population, newGeneration);
 
 		};
 
@@ -104,7 +105,8 @@ namespace GA_Cpp
 
 		int TournamentSelection() const {
 			std::cout << "Tournament Selection" << std::endl;
-			return 0;
+			//return 0;
+			return (int)(GetRandom01() * 3);
 		};
 
 		static int ComparePopType(const void* _a, const void* _b) {
@@ -120,4 +122,4 @@ namespace GA_Cpp
 			return (int)NULL;
 		}
 	};
-}
+};
