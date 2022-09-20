@@ -36,14 +36,14 @@ project "basic_optimisation"
    kind "ConsoleApp"
    language "C++"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/Examples/%{prj.name}")
-	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/Example/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/Examples/%{prj.name}")
    location("%{wks.location}/Examples/%{prj.name}")
 
    includedirs{
       "%{wks.location}/Genetic_Algorithm_Cpp/include"
    }
 
-   files { "Examples/%{prj.name}/**.h","Examples/%{prj.name}/**.cpp" }
+   files { "Examples/%{prj.name}/**.h","Examples/%{prj.name}/**.hpp","Examples/%{prj.name}/**.cpp" }
 
 
 
