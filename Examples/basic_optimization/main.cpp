@@ -10,9 +10,14 @@ int main()
 
     for (int i = 0; i < 100; i++) {
         test.Optimise();
-
+        
         auto best = test.GetBestResult();
-
         best.LogParameters();
     }
+
+    std::cout << "Final Generation: " << std::endl;
+    test.LogPreviousGeneration();
+
+    std::cout << "Best Performing Population Member: " << std::endl;
+    test.LogBestResult();
 }
