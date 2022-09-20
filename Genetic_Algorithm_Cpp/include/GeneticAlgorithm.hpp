@@ -134,6 +134,7 @@ namespace GA_Cpp
 		};
 
 		int SimpleSelection() const {
+			// This algorithm will only work for non-negative fitness value
 			// simple selection is defined in this link as a generic selection algorithm https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
 
 			double randNum = GetRandom01();
