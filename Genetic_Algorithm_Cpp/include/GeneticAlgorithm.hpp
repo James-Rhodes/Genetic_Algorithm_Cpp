@@ -66,6 +66,7 @@ namespace GA_Cpp
 
 			if ((m_pruneFrequency != -1) && ((m_iterations % m_pruneFrequency) == 0)) {
 				PrunePopulation();
+				CalculateAllFitness(); // Recalculate the Fitness's after pruning
 			}
 		}
 	
