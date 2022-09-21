@@ -10,7 +10,7 @@
 int RandomSelectionAlgorithm(const std::vector<Parabola> &population)
 {
     // Totally useless selection algorithm. 
-    return GA_Cpp::GetRandomInt(0, population.size() - 1);
+    return GA_Cpp::GetRandomInt(0, (int)population.size() - 1);
 }
 
 int main()
