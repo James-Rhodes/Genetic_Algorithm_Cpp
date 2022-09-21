@@ -2,6 +2,7 @@
 
 #include "PopulationMember.hpp"
 #include <vector>
+#include <unordered_set>
 #include <iostream>
 #include <type_traits>
 #include <algorithm>
@@ -57,11 +58,15 @@ namespace GA_Cpp
 		}
 
 		void Optimise() {
+			m_iterations++;
+
 			CrossOverAll();
 			MutateAll();
 			CalculateAllFitness();
 
-			m_iterations++;
+			if ((m_pruneFrequency != -1) && ((m_iterations % m_pruneFrequency) == 0)) {
+				PrunePopulation();
+			}
 		}
 	
 		popType& GetBestResult() {
@@ -85,6 +90,11 @@ namespace GA_Cpp
 			return m_iterations;
 		}
 
+		void SetPruneFrequency(int pruneFrequency) {
+			//Sets how often all duplicates in the population are reinitialised/removed
+			m_pruneFrequency = pruneFrequency;
+		}
+
 	private:
 		int m_populationSize;
 		std::vector<popType> m_population;
@@ -93,6 +103,7 @@ namespace GA_Cpp
 		double m_totalFitness = 0;
 		int m_indexOfBestPopulationMember = -1;
 		uint32_t m_iterations = 0;
+		int m_pruneFrequency = -1;
 
 		int (*m_selectionFunc)(const std::vector<popType>&) = nullptr;
 
@@ -202,6 +213,21 @@ namespace GA_Cpp
 			}
 			return m_populationSize - 1;
 		};
+
+		void PrunePopulation() {
+		// Prunes all the members of the population that are deemed the same
+			std::unordered_set<double> set;
+
+			for (popType& populationMember : m_population)
+			{
+				if (!set.insert(populationMember.fitness).second) {
+					// If the fitness already exists in the set then mutate it
+					
+					//populationMember.Init();
+					populationMember.Mutate(m_mutationRate);
+				}
+			}
+		}
 
 		static int ComparePopType(const void* _a, const void* _b) {
 			popType* a = (popType*)_a;
