@@ -57,6 +57,8 @@ project "Genetic_Algorithm_Cpp"
 
 CreateExampleProject("basic_optimisation")
 CreateExampleProject("setting_custom_selection_function")
+CreateExampleProject("pruning_population")
+
 
    
 
