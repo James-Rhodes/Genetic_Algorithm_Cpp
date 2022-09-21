@@ -80,7 +80,7 @@ namespace GA_Cpp
 
 		void LogPreviousGeneration() {
 			std::qsort(m_population.data(), m_population.size(), sizeof(popType), GeneticAlgorithm::ComparePopType);
-
+			m_indexOfBestPopulationMember = 0; // The best member of the population is the first in the list now that it has been sorted
 			for (popType& populationMember : m_population) {
 				populationMember.LogParameters();
 			}
