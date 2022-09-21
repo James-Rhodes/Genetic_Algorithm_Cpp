@@ -49,7 +49,7 @@ namespace GA_Cpp
 
 			InitAll();
 
-			CrossOverAll();
+			CalculateAllFitness();
 		};
 
 		void SetSelectionFunction(int (*func)(const std::vector<popType>&)) {
