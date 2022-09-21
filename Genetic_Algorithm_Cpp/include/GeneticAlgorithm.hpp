@@ -60,6 +60,8 @@ namespace GA_Cpp
 			CrossOverAll();
 			MutateAll();
 			CalculateAllFitness();
+
+			m_iterations++;
 		}
 	
 		popType& GetBestResult() {
@@ -78,6 +80,11 @@ namespace GA_Cpp
 			}
 		}
 
+		uint32_t GetNumberOfIterations() {
+			// Returns the number of times Optimize has been called
+			return m_iterations;
+		}
+
 	private:
 		int m_populationSize;
 		std::vector<popType> m_population;
@@ -85,6 +92,7 @@ namespace GA_Cpp
 		int m_numElite;
 		double m_totalFitness = 0;
 		int m_indexOfBestPopulationMember = -1;
+		uint32_t m_iterations = 0;
 
 		int (*m_selectionFunc)(const std::vector<popType>&) = nullptr;
 
