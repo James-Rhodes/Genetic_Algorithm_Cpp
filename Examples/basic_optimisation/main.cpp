@@ -9,7 +9,7 @@ int main()
     auto test = GA_Cpp::GeneticAlgorithm<Parabola>(100,0.3f,3);
 
     test.SetSelectionFunction(GA_Cpp::TournamentSelection<Parabola,0.4f>);
-
+    std::cout << "\n----- Beginning Optimization -----" << std::endl;
     for (int i = 0; i < 100; i++) {
         test.Optimise();
         
@@ -17,9 +17,12 @@ int main()
         best.LogParameters();
     }
 
-    std::cout << "Final Generation: " << std::endl;
+    std::cout << "\n----- Optimization Complete -----\n" << std::endl;
+
+
+    std::cout << "Final Generation achieved after "<<test.GetNumberOfIterations()<<" iterations: " << std::endl;
     test.LogPreviousGeneration();
 
-    std::cout << "Best Performing Population Member: " << std::endl;
+    std::cout << "\n\nBest Performing Population Member: " << std::endl;
     test.LogBestResult();
 }
