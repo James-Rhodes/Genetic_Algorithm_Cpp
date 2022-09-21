@@ -5,8 +5,10 @@
 
 int main()
 {
-    std::cout << "Hello Example Project" << std::endl;
-    auto test = GA_Cpp::GeneticAlgorithm<Parabola>(100,0.3f,3,GA_Cpp::SelectionAlgorithm::tournament);
+    std::cout << "----- Optimizing the max value of a Parabola -----" << std::endl;
+    auto test = GA_Cpp::GeneticAlgorithm<Parabola>(100,0.3f,3);
+
+    test.SetSelectionFunction(GA_Cpp::TournamentSelection<Parabola,0.4f>);
 
     for (int i = 0; i < 100; i++) {
         test.Optimise();

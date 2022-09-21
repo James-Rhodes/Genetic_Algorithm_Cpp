@@ -10,11 +10,34 @@ namespace GA_Cpp
 {
 	enum class SelectionAlgorithm { simple, tournament};
 
+
+	template<typename popType, float selectionPoolPercentage>
+	int TournamentSelection(const std::vector<popType>& population) {
+		// Performs selection using the tournament selection method. This can be found here: https://en.wikipedia.org/wiki/Tournament_selection
+		// selectionPoolPercentage is how much of the selection pool to be used for tournament selection
+		int bestIndex = -1;
+		int populationSize = (int)population.size();
+		int selectionPool = (int)(populationSize * selectionPoolPercentage);
+		for (int i = 0; i < selectionPool; i++)
+		{
+			int randIndex = GetRandomInt(0, populationSize - 1);
+			if (bestIndex == -1)
+			{
+				bestIndex = randIndex;
+			}
+			else if (population[randIndex].fitness > population[bestIndex].fitness)
+			{
+				bestIndex = randIndex;
+			}
+		}
+		return bestIndex;
+	}
+
 	template <typename popType>
 	class GeneticAlgorithm
 	{
 	public:
-		GeneticAlgorithm(int populationSize, float mutationRate, int numElite = 1, SelectionAlgorithm selectionAlgorithm = SelectionAlgorithm::simple)
+		GeneticAlgorithm(int populationSize, float mutationRate, int numElite = 1)
 			:m_populationSize(populationSize),
 			m_population(std::vector<popType>(populationSize)),
 			m_mutationRate(mutationRate),
@@ -23,25 +46,14 @@ namespace GA_Cpp
 
 			static_assert(std::is_base_of<PopulationMember<popType>, popType>::value, "\nERROR: The Population Member you have passed in does not derive from base class PopulationMember...\nERROR: Please inherit from this base type. This is achieved using CRTP.\nERROR: eg. class YourClass : public PopulationMember<YourClass>{}\n");
 
-			switch (selectionAlgorithm) {
-
-			case(SelectionAlgorithm::simple):
-				selectionFunc = &GeneticAlgorithm::SimpleSelection;
-				break;
-			case(SelectionAlgorithm::tournament):
-				selectionFunc = &GeneticAlgorithm::TournamentSelection;
-				break;
-			};
-
-			//(this->*selectionFunc)(); How to call the function pointer ... 
-
 			InitAll();
 
 			CrossOverAll();
 		};
 
-		void SetSelectionPoolPercentage(float selectionPoolPercentage) {
-			m_selectionPoolPercentage = selectionPoolPercentage;
+		void SetSelectionFunction(int (*func)(const std::vector<popType>&)) {
+			// Set a custom selection function which returns an index of the selection
+			m_selectionFunc = func;
 		}
 
 		void Optimise() {
@@ -72,10 +84,10 @@ namespace GA_Cpp
 		float m_mutationRate;
 		int m_numElite;
 		double m_totalFitness = 0;
-		float m_selectionPoolPercentage = 0.3f; // How much of the selection pool to be used for tournament selection
 		int m_indexOfBestPopulationMember = -1;
 
-		int (GeneticAlgorithm::*selectionFunc)() const;
+		int (*m_selectionFunc)(const std::vector<popType>&) = nullptr;
+
 
 		void InitAll() {
 			for (popType& popMember : m_population) {
@@ -98,11 +110,24 @@ namespace GA_Cpp
 					populationMember = m_population[i];
 				}
 				else {
-					int parentAIndex = (this->*selectionFunc)();
-					int parentBIndex = (this->*selectionFunc)();
+					int parentAIndex = 0;
+					int parentBIndex = 0;
 
-					while (parentAIndex == parentBIndex) {
-						parentBIndex = (this->*selectionFunc)();
+					if (m_selectionFunc == nullptr) {
+						parentAIndex = SimpleSelection();
+						parentBIndex = SimpleSelection();
+
+						while (parentAIndex == parentBIndex) {
+							parentBIndex = SimpleSelection();
+						}
+					}
+					else {
+						parentAIndex = m_selectionFunc(m_population);
+						parentBIndex = m_selectionFunc(m_population);
+
+						while (parentAIndex == parentBIndex) {
+							parentBIndex = m_selectionFunc(m_population);
+						}
 					}
 
 					populationMember.CrossOver(m_population[parentAIndex], m_population[parentBIndex]);
@@ -168,26 +193,6 @@ namespace GA_Cpp
 				}
 			}
 			return m_populationSize - 1;
-		};
-
-		int TournamentSelection() const {
-			// Performs selection using the tournament selection method. This can be found here: https://en.wikipedia.org/wiki/Tournament_selection
-			int bestIndex = -1;
-			int selectionPool = (int)(m_populationSize * m_selectionPoolPercentage);
-			for (int i = 0; i < selectionPool; i++)
-			{
-				int randIndex = GetRandomInt(0, m_populationSize - 1);
-				if (bestIndex == -1)
-				{
-					bestIndex = randIndex;
-				}
-				else if (m_population[randIndex].fitness > m_population[bestIndex].fitness)
-				{
-					bestIndex = randIndex;
-				}
-			}
-
-			return bestIndex;
 		};
 
 		static int ComparePopType(const void* _a, const void* _b) {
