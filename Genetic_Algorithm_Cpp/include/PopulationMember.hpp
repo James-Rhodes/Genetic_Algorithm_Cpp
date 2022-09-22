@@ -11,6 +11,7 @@ namespace GA_Cpp
 	public:
 		PopulationMember() = default;
 
+		// Log the parameters of this population member. ie. fitness etc
 		virtual void LogParameters() const {};
 
 		// Initialise the member of the population with random values
@@ -36,17 +37,16 @@ namespace GA_Cpp
 		double fitness = 0;
 	};
 
+	// Returns a random number between 0 and 1
 	double GetRandom01()
 	{
-		// Returns a random number between 0 and 1
-
 		static std::mt19937 e((unsigned int)std::chrono::system_clock::now().time_since_epoch().count());
 		static std::uniform_real_distribution<> dis(0, 1); // range 0 - 1
 		return dis(e);
 	}
 
+	// Returns a random integer between min and max inclusive
 	int GetRandomInt(int min, int max) {
-		// Returns a random integer between min and max inclusive
 		max++;
 		return (int)std::floor(GetRandom01() * (float)(max - min) / (1.0f + (float)min));
 	}
