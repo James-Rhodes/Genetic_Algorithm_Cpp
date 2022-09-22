@@ -11,11 +11,12 @@ namespace GA_Cpp
 {
 	enum class SelectionAlgorithm { simple, tournament};
 
-
+	// Performs selection using the tournament selection method. This can be found here: https://en.wikipedia.org/wiki/Tournament_selection
+	// popType = the type of the population used in the genetic algorithm
+	// selectionPoolPercentage = how much of the selection pool to be used for tournament selection
 	template<typename popType, float selectionPoolPercentage>
 	int TournamentSelection(const std::vector<popType>& population) {
-		// Performs selection using the tournament selection method. This can be found here: https://en.wikipedia.org/wiki/Tournament_selection
-		// selectionPoolPercentage is how much of the selection pool to be used for tournament selection
+
 		int bestIndex = -1;
 		int populationSize = (int)population.size();
 		int selectionPool = (int)(populationSize * selectionPoolPercentage);
@@ -34,10 +35,14 @@ namespace GA_Cpp
 		return bestIndex;
 	}
 
+	// This is the Genetic Algorithm class which facilitates optimising based on the population type passed in as template parameter
 	template <typename popType>
 	class GeneticAlgorithm
 	{
 	public:
+		// populationSize = how many members per generation
+		// mutationRate = what percentage of the population is mutated (0-1 range)
+		// numElite = how many of the best performing members of the population persist to the next generation
 		GeneticAlgorithm(int populationSize, float mutationRate, int numElite = 1)
 			:m_populationSize(populationSize),
 			m_population(std::vector<popType>(populationSize)),
@@ -46,17 +51,33 @@ namespace GA_Cpp
 		{
 
 			static_assert(std::is_base_of<PopulationMember<popType>, popType>::value, "\nERROR: The Population Member you have passed in does not derive from base class PopulationMember...\nERROR: Please inherit from this base type. This is achieved using CRTP.\nERROR: eg. class YourClass : public PopulationMember<YourClass>{}\n");
+			if (m_populationSize <= 1) {
+				std::string error = "\nERROR: There must be at least 2 members of the population for optimisation to occur.";
+				std::cout <<error<< std::endl;
+				throw error;
+			}
+			if (m_mutationRate > 1.0f || m_mutationRate < 0.0) {
+				std::string error = "\nERROR: Mutation Rate must be between 0 and 1 as it is the percentage of the population that will be mutated.";
+				std::cout << error << std::endl;
+				throw error;
+			}
+			if (m_numElite < 0 || m_numElite > m_populationSize) {
+				std::string error = "\nERROR: numElite must be between 0 and the size of the population. This is the number of the top performing population persist to the next generation.";
+				std::cout << error << std::endl;
+				throw error;
+			}
 
 			InitAll();
 
 			CalculateAllFitness();
 		};
 
+		// Set the selection function which returns an index of which member of the population to select
 		void SetSelectionFunction(int (*func)(const std::vector<popType>&)) {
-			// Set a custom selection function which returns an index of the selection
 			m_selectionFunc = func;
 		}
 
+		// Runs one generation of the genetic algorithm. Run this time until a desired result is reached
 		void Optimise() {
 			m_iterations++;
 
@@ -70,14 +91,17 @@ namespace GA_Cpp
 			}
 		}
 	
+		// Returns a reference to the best member of the population
 		popType& GetBestResult() {
 			return m_population[m_indexOfBestPopulationMember];
 		}
 
+		// Logs the best member of the most recent generation
 		void LogBestResult() {
 			m_population[m_indexOfBestPopulationMember].LogParameters();
 		}
 
+		// Logs the most recent Generation
 		void LogPreviousGeneration() {
 			std::qsort(m_population.data(), m_population.size(), sizeof(popType), GeneticAlgorithm::ComparePopType);
 			m_indexOfBestPopulationMember = 0; // The best member of the population is the first in the list now that it has been sorted
@@ -86,13 +110,18 @@ namespace GA_Cpp
 			}
 		}
 
+		// Returns the number of times Optimize has been called
 		uint32_t GetNumberOfIterations() {
-			// Returns the number of times Optimize has been called
 			return m_iterations;
 		}
 
+		//Sets how often all duplicates in the population are reinitialised/removed
 		void SetPruneFrequency(int pruneFrequency) {
-			//Sets how often all duplicates in the population are reinitialised/removed
+			if (pruneFrequency < 1) {
+				std::string error = "\nERROR: pruneFrequency must be greater than 1 for it to actually prune the population";
+				std::cout << error << std::endl;
+				throw error;
+			}
 			m_pruneFrequency = pruneFrequency;
 		}
 
@@ -108,7 +137,7 @@ namespace GA_Cpp
 
 		int (*m_selectionFunc)(const std::vector<popType>&) = nullptr;
 
-
+		// Initialises all of the members of the population
 		void InitAll() {
 			for (popType& popMember : m_population) {
 				popMember.Init();
@@ -117,8 +146,8 @@ namespace GA_Cpp
 			CalculateAllFitness();
 		}
 
+		// Performs crossover on the entire population
 		void CrossOverAll() {
-			// Perform crossover on all the population
 			std::vector<popType> newGeneration(m_populationSize);
 			std::qsort(m_population.data(), m_population.size(), sizeof(popType), GeneticAlgorithm::ComparePopType);
 
@@ -158,6 +187,7 @@ namespace GA_Cpp
 
 		};
 
+		// Performs mutation on the entire population
 		void MutateAll() {
 
 			for (popType& populationMember : m_population) {
@@ -168,6 +198,7 @@ namespace GA_Cpp
 			}
 		};
 
+		// Calculates the fitness of each member of the population
 		void CalculateAllFitness() {
 			m_totalFitness = 0;
 
@@ -190,9 +221,11 @@ namespace GA_Cpp
 			}
 		};
 
+		// Selects a member of the population by fitness proportional selection
+		// This algorithm will only work for non-negative fitness value
+		// simple selection is defined in this link as a generic selection algorithm https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
 		int SimpleSelection() const {
-			// This algorithm will only work for non-negative fitness value
-			// simple selection is defined in this link as a generic selection algorithm https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)
+
 
 			double randNum = GetRandom01();
 			double accumulation = 0;
@@ -215,8 +248,8 @@ namespace GA_Cpp
 			return m_populationSize - 1;
 		};
 
-		void PrunePopulation() {
 		// Prunes all the members of the population that are deemed the same
+		void PrunePopulation() {
 			std::unordered_set<double> set;
 
 			for (popType& populationMember : m_population)
@@ -230,6 +263,7 @@ namespace GA_Cpp
 			}
 		}
 
+		// Compares members of the population for sorting
 		static int ComparePopType(const void* _a, const void* _b) {
 			popType* a = (popType*)_a;
 			popType* b = (popType*)_b;
