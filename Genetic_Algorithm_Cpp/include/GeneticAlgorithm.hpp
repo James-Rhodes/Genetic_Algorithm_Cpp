@@ -2,7 +2,7 @@
 
 #include "PopulationMember.hpp"
 #include <vector>
-#include <unordered_set>
+#include <unordered_map>
 #include <iostream>
 #include <type_traits>
 #include <algorithm>
@@ -115,14 +115,16 @@ namespace GA_Cpp
 			return m_iterations;
 		}
 
-		//Sets how often all duplicates in the population are reinitialised/removed
-		void SetPruneFrequency(int pruneFrequency) {
+		// pruneFrequency = how often the population should have its duplicates removed
+		// maxDuplicate = the maximum number of duplicate population members are allowed in the population
+		void SetPruneFrequency(int pruneFrequency, int maxDuplicates = 1) {
 			if (pruneFrequency < 1) {
 				std::string error = "\nERROR: pruneFrequency must be greater than 1 for it to actually prune the population";
 				std::cout << error << std::endl;
 				throw error;
 			}
 			m_pruneFrequency = pruneFrequency;
+			m_maxDuplicates = maxDuplicates;
 		}
 
 	private:
@@ -134,6 +136,7 @@ namespace GA_Cpp
 		int m_indexOfBestPopulationMember = -1;
 		uint32_t m_iterations = 0;
 		int m_pruneFrequency = -1;
+		int m_maxDuplicates = 1;
 
 		int (*m_selectionFunc)(const std::vector<popType>&) = nullptr;
 
@@ -250,15 +253,22 @@ namespace GA_Cpp
 
 		// Prunes all the members of the population that are deemed the same
 		void PrunePopulation() {
-			std::unordered_set<double> set;
+			std::unordered_map<double, int> map;
 
 			for (popType& populationMember : m_population)
 			{
-				if (!set.insert(populationMember.fitness).second) {
-					// If the fitness already exists in the set then mutate it
-					
-					//populationMember.Init();
-					populationMember.Mutate(m_mutationRate);
+				auto currentInsertion = map.insert({ populationMember.fitness , 1 });
+				if (!currentInsertion.second) {
+					// If the fitness already exists in the map then add 1 to the frequency
+					(*currentInsertion.first).second++;
+
+					if ((*currentInsertion.first).second > m_maxDuplicates) {
+						// If there are more than the allowed amount of duplicates for each population member then mutate
+						
+						//populationMember.Init();
+						populationMember.Mutate(m_mutationRate);
+					}
+
 				}
 			}
 		}
