@@ -4,7 +4,7 @@
 #include "PopulationMember.hpp"
 
 // Find the x and y value that corresponds to the 
-// maximum value of a known curve z = 0.01*(sin(10*x)/x)*(sin(10*y)/y)
+// maximum value of a known curve z = abs((sin(10*x)/x)*(sin(10*y)/y))
 // The corresponding x and y values should be 0 and 0 respectively
 class ThreeDimensionalFunction : public GA_Cpp::PopulationMember<ThreeDimensionalFunction> {
 public:
@@ -33,7 +33,7 @@ public:
     };
 
     double CalculateFitness() override {
-        return (std::sin(10 * m_xVal) / m_xVal) * (std::sin(10 * m_yVal) / m_yVal);
+        return std::abs((std::sin(10 * m_xVal) / m_xVal) * (std::sin(10 * m_yVal) / m_yVal));
     };
 
 private:
