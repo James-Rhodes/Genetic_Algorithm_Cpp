@@ -127,6 +127,15 @@ namespace GA_Cpp
 			m_maxDuplicates = maxDuplicates;
 		}
 
+		// Initialises all of the members of the population
+		void InitAll() {
+			for (popType& popMember : m_population) {
+				popMember.Init();
+			}
+
+			CalculateAllFitness();
+		}
+
 	private:
 		int m_populationSize;
 		std::vector<popType> m_population;
@@ -139,15 +148,6 @@ namespace GA_Cpp
 		int m_maxDuplicates = 1;
 
 		int (*m_selectionFunc)(const std::vector<popType>&) = nullptr;
-
-		// Initialises all of the members of the population
-		void InitAll() {
-			for (popType& popMember : m_population) {
-				popMember.Init();
-			}
-
-			CalculateAllFitness();
-		}
 
 		// Performs crossover on the entire population
 		void CrossOverAll() {
