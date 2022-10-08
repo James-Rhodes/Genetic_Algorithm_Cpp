@@ -136,6 +136,10 @@ namespace GA_Cpp
 			CalculateAllFitness();
 		}
 
+		std::vector<popType>& GetPopulationReference() {
+			return m_population;
+		}
+
 	private:
 		int m_populationSize;
 		std::vector<popType> m_population;
