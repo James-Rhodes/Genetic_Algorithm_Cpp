@@ -212,10 +212,16 @@ namespace GA_Cpp
 			double bestFitness = -INFINITY;
 			m_indexOfBestPopulationMember = -1;
 
-			int i = 0;
 			for (popType& populationMember : m_population) {
 				double fitness = populationMember.CalculateFitness();
 				populationMember.SetFitness(fitness);
+			}
+
+			// Perform the loop twice to give the population members a chance to set their fitness after all CalculateFitness's have been called.
+			int i = 0;
+			for (popType& populationMember : m_population) {
+				
+				double fitness = populationMember.GetFitness();
 
 				if (fitness > bestFitness)
 				{
