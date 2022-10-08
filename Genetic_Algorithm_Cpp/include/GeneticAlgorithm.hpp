@@ -164,6 +164,7 @@ namespace GA_Cpp
 				if (i < m_numElite) {
 					// Number of elite is how many of the best members of the current population to keep unchanged for the next one
 					populationMember = m_population[i];
+					populationMember.isElite = true;
 				}
 				else {
 					int parentAIndex = 0;
@@ -187,6 +188,7 @@ namespace GA_Cpp
 					}
 
 					populationMember.CrossOver(m_population[parentAIndex], m_population[parentBIndex]);
+					populationMember.isElite = false;
 				}
 				i++;
 			}
@@ -201,6 +203,7 @@ namespace GA_Cpp
 				double randomNum = GetRandom01();
 				if (randomNum < m_mutationRate) {
 					populationMember.Mutate(m_mutationRate);
+					populationMember.isElite = false;
 				}
 			}
 		};
@@ -213,8 +216,11 @@ namespace GA_Cpp
 			m_indexOfBestPopulationMember = -1;
 
 			for (popType& populationMember : m_population) {
-				double fitness = populationMember.CalculateFitness();
-				populationMember.SetFitness(fitness);
+				// Don't bother calling calculate fitness for the elite population because they will be the same as the previous generation (Optimisation)
+				if (!populationMember.isElite) {
+					double fitness = populationMember.CalculateFitness();
+					populationMember.SetFitness(fitness);
+				}
 			}
 
 			// Perform the loop twice to give the population members a chance to set their fitness after all CalculateFitness's have been called.

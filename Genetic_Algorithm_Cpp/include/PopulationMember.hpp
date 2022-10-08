@@ -35,6 +35,7 @@ namespace GA_Cpp
 		}
 
 		double fitness = 0;
+		bool isElite = false;
 	};
 
 	// Returns a random number between 0 and 1
