@@ -283,6 +283,7 @@ namespace GA_Cpp
 						
 						//populationMember.Init();
 						populationMember.Mutate(m_mutationRate);
+						populationMember.isElite = false;
 					}
 
 				}
