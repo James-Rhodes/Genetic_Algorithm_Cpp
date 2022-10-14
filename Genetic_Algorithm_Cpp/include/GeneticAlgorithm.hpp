@@ -43,7 +43,8 @@ namespace GA_Cpp
 		// populationSize = how many members per generation
 		// mutationRate = what percentage of the population is mutated (0-1 range)
 		// numElite = how many of the best performing members of the population persist to the next generation
-		GeneticAlgorithm(int populationSize, float mutationRate, int numElite = 1)
+		// initOnInstantiation = a boolean that determines if the population should be initialised on instantiation of the GA. If false, GeneticAlgorithm::Init() must be called manually before optimisation
+		GeneticAlgorithm(int populationSize, float mutationRate, int numElite = 1, bool initOnInstantiation = true)
 			:m_populationSize(populationSize),
 			m_population(std::vector<popType>(populationSize)),
 			m_mutationRate(mutationRate),
@@ -66,11 +67,19 @@ namespace GA_Cpp
 				std::cout << error << std::endl;
 				throw error;
 			}
-
-			InitAll();
-
-			CalculateAllFitness();
+			if (initOnInstantiation) {
+				Init();
+			}
 		};
+
+		void Init() {
+			if (!m_initialised) {
+				InitAll();
+
+				CalculateAllFitness();
+				m_initialised = true;
+			}
+		}
 
 		// Set the selection function which returns an index of which member of the population to select
 		void SetSelectionFunction(int (*func)(const std::vector<popType>&)) {
@@ -79,6 +88,11 @@ namespace GA_Cpp
 
 		// Runs one generation of the genetic algorithm. Run this time until a desired result is reached
 		void Optimise() {
+			if (!m_initialised) {
+				std::string error = "\nERROR: The population must be initialised before Optimise can be called (call Init before Optimise)";
+				std::cout << error << std::endl;
+				throw error;
+			}
 			m_iterations++;
 
 			CrossOverAll();
@@ -145,6 +159,7 @@ namespace GA_Cpp
 		std::vector<popType> m_population;
 		float m_mutationRate;
 		int m_numElite;
+		bool m_initialised = false;
 		double m_totalFitness = 0;
 		int m_indexOfBestPopulationMember = -1;
 		uint32_t m_iterations = 0;
